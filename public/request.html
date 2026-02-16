@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar/Editar Loja - LojasSaaS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./css/style.css" rel="stylesheet">
+    <style>
+        /* Custom scrollbar for preview */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans h-screen overflow-hidden flex flex-col">
+
+    <!-- Top Bar -->
+    <header class="bg-white shadow z-10 flex justify-between items-center px-6 py-3">
+        <div class="flex items-center">
+            <a href="dashboard.html" class="text-gray-500 hover:text-gray-700 mr-4">&larr; Voltar</a>
+            <h1 class="text-xl font-bold text-gray-800">Criador de Sites</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span id="saveStatus" class="text-sm text-gray-500 hidden">Salvando...</span>
+            <button id="saveBtn"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded focus:outline-none shadow">
+                Salvar Projeto
+            </button>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Left Panel: Form -->
+        <div class="w-1/3 bg-white border-r overflow-y-auto p-6 shadow-xl z-10">
+            <h2 class="text-lg font-bold mb-4 text-gray-700 uppercase tracking-wide">Configurações</h2>
+
+            <form id="requestForm" class="space-y-6">
+                <!-- Section 1: Basic -->
+                <div class="space-y-4">
+                    <label class="block">
+                        <span class="text-gray-700 font-bold">Nome do Projeto</span>
+                        <input type="text" id="name" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2 border"
+                            placeholder="Minha Loja Incrível">
+                    </label>
+
+                    <label class="block">
+                        <span class="text-gray-700 font-bold">Tipo de Site (Template)</span>
+                        <select id="category" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2 border">
+                            <option value="">Selecione...</option>
+                            <option value="Loja Virtual">Loja Virtual</option>
+                            <option value="Institucional">Institucional</option>
+                            <option value="Portfólio">Portfólio</option>
+                            <option value="Landing Page">Landing Page</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">O modelo será selecionado automaticamente baseado na
+                            categoria.</p>
+                        <!-- Hidden template select, controlled by JS -->
+                        <select id="templateSelect" class="hidden"></select>
+                    </label>
+
+                    <label class="block">
+                        <span class="text-gray-700 font-bold">Descrição</span>
+                        <textarea id="description" rows="3"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2 border"
+                            placeholder="Descreva seu negócio..."></textarea>
+                    </label>
+                </div>
+
+                <hr class="border-gray-200">
+
+                <!-- Section 2: Visuals -->
+                <div class="space-y-4">
+                    <h3 class="text-md font-semibold text-gray-600">Identidade Visual</h3>
+
+                    <label class="block">
+                        <span class="text-gray-700 font-bold">Logo URL</span>
+                        <input type="url" id="logoUrl" placeholder="https://..."
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2 border">
+                    </label>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="block">
+                            <span class="text-xs text-gray-500 block mb-1">Primária</span>
+                            <div class="flex items-center space-x-2">
+                                <input type="color" id="color1" class="h-8 w-12 border-0 p-0 rounded cursor-pointer"
+                                    value="#000000">
+                            </div>
+                        </label>
+                        <label class="block">
+                            <span class="text-xs text-gray-500 block mb-1">Secundária</span>
+                            <div class="flex items-center space-x-2">
+                                <input type="color" id="color2" class="h-8 w-12 border-0 p-0 rounded cursor-pointer"
+                                    value="#ffffff">
+                            </div>
+                        </label>
+                        <label class="block">
+                            <span class="text-xs text-gray-500 block mb-1">Destaque</span>
+                            <div class="flex items-center space-x-2">
+                                <input type="color" id="color3" class="h-8 w-12 border-0 p-0 rounded cursor-pointer"
+                                    value="#cccccc">
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="border-gray-200">
+
+                <!-- Section 3: Contact & Structure -->
+                <div class="space-y-4">
+                    <h3 class="text-md font-semibold text-gray-600">Contato & Redes</h3>
+
+                    <label class="block">
+                        <span class="text-gray-700 font-bold">Email de Contato</span>
+                        <input type="email" id="contactEmail"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2 border">
+                    </label>
+
+                    <label class="block">
+                        <span class="text-gray-700 font-bold">Instagram (usuário)</span>
+                        <div class="flex">
+                            <span
+                                class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">@</span>
+                            <input type="text" id="instagram"
+                                class="flex-1 block w-full rounded-none rounded-r-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2 border">
+                        </div>
+                    </label>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right Panel: Real-time Preview -->
+        <div class="flex-1 bg-gray-200 flex flex-col relative">
+            <div class="bg-gray-800 text-white text-xs py-1 px-4 flex justify-between items-center">
+                <span>Preview em Tempo Real</span>
+                <div class="flex space-x-2">
+                    <button onclick="setPreviewMode('desktop')" class="hover:text-gray-300">Desktop</button>
+                    <button onclick="setPreviewMode('mobile')" class="hover:text-gray-300">Mobile</button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-hidden flex justify-center items-start p-8" id="previewWrapper">
+                <iframe id="previewFrame"
+                    class="w-full h-full bg-white shadow-2xl transition-all duration-300 rounded-lg border-4 border-gray-800"
+                    sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/config.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/request.js"></script>
+</body>
+
+</html>

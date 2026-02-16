@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview do Site</title>
+    <!-- Tailwind via CDN for preview rendering -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style id="dynamicStyles"></style>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <div id="previewContainer" class="w-full min-h-screen bg-white">
+        <div class="flex justify-center items-center h-screen">
+            <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+        </div>
+    </div>
+
+    <script src="./js/auth.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const siteId = urlParams.get('id');
+
+        async function loadPreview() {
+            if (!siteId) return;
+
+            try {
+                // Fetch site details (public if live, or protected if preview)
+                // Since this is a specialized preview, we likely need Auth. 
+                // In a real SaaS, "live_url" would be public, but "preview" might require auth.
+                // Reusing the getSiteDetails endpoint which requires auth.
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('Faça login para visualizar a prévia.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const res = await fetch(`${API_URL}/sites/${siteId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) {
+                    document.getElementById('previewContainer').innerHTML = '<p class="text-center p-10 text-red-500">Erro ao carregar prévia.</p>';
+                    return;
+                }
+
+                const site = await res.json();
+                renderSite(site);
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderSite(site) {
+            // Inject CSS
+            const styleEl = document.getElementById('dynamicStyles');
+            let css = site.css_structure || '';
+
+            // Inject Colors into CSS Variables
+            if (site.colors) {
+                document.documentElement.style.setProperty('--color-primary', site.colors.primary);
+                document.documentElement.style.setProperty('--color-secondary', site.colors.secondary);
+                document.documentElement.style.setProperty('--color-accent', site.colors.accent);
+
+                // Add default Tailwind classes overrides if needed, or simple custom CSS
+                css += `
+                    .bg-primary { background-color: ${site.colors.primary} !important; }
+                    .text-primary { color: ${site.colors.primary} !important; }
+                    .bg-secondary { background-color: ${site.colors.secondary} !important; }
+                    .text-secondary { color: ${site.colors.secondary} !important; }
+                `;
+            }
+            styleEl.textContent = css;
+
+            // Inject HTML (Simple Template Engine replacement)
+            let html = site.html_structure || '';
+
+            // Replace placeholders
+            html = html.replace(/{{name}}/g, site.name);
+            html = html.replace(/{{description}}/g, site.description || '');
+            html = html.replace(/{{logo_url}}/g, site.logo_url || '');
+            html = html.replace(/{{email}}/g, site.contact_info?.email || '');
+            html = html.replace(/{{instagram}}/g, site.social_links?.instagram || '');
+
+            // Render
+            document.getElementById('previewContainer').innerHTML = html;
+        }
+
+        loadPreview();
+    </script>
+</body>
+
+</html>
