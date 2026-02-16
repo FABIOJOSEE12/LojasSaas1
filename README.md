@@ -5,7 +5,7 @@ Sistema completo para criação de sites e lojas virtuais (SaaS).
 ## Pré-requisitos
 
 - Node.js instalado.
-- PostgreSQL instalado e rodando.
+- MySQL instalado e rodando.
 
 ## Configuração
 
