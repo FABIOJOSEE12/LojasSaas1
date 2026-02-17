@@ -8,6 +8,7 @@ const pool = mysql.createPool({
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'criador_lojas',
+    port: process.env.DB_PORT || 3306,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -23,9 +24,9 @@ const checkConnection = async () => {
     }
 };
 
-checkConnection();
-
+// Removed automatic execution of checkConnection() to prevent build failures
 module.exports = {
+    checkConnection,
     query: async (sql, params) => {
         const [results, ] = await pool.execute(sql, params);
         return { rows: results }; // Adapter to keep compatibility with existing code expectation of { rows: [] }

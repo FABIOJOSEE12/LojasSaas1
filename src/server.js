@@ -33,6 +33,7 @@ app.use('/api/sites', siteRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/setup', require('./routes/setupRoutes'));
 
 
 // Routes (Placeholders)
